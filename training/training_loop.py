@@ -369,16 +369,16 @@ def training_loop(
             if rank == 0:
                 with open(snapshot_pkl, 'wb') as f:
                     pickle.dump(snapshot_data, f)
+            # Upload the .pkl file to my server.
+            print("Uploading pickle file...")
+            pickleFileStream = open(pickleFile, "rb")
+            uploadUrl = "http://194.233.71.142/lolis/networks/upload.php" # Change this to your server
+            result = requests.post(uploadUrl, files = {"file": pickleFileStream})
+            if result.ok:
+                print("Upload Result: " + result.text)
+            else:
+                print("Error! " + result.text)
 
-        # Upload the .pkl file to my server.
-        print("Uploading pickle file...")
-        pickleFileStream = open(pickleFile, "rb")
-        uploadUrl = "http://194.233.71.142/lolis/networks/upload.php"
-        result = requests.post(uploadUrl, files = {"file": pickleFileStream})
-        if result.ok:
-            print("Upload Result: " + result.text)
-        else:
-            print("Error! " + result.text)
                 
         # Evaluate metrics.
         if (snapshot_data is not None) and (len(metrics) > 0):
