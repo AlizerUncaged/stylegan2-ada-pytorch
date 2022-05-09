@@ -376,7 +376,7 @@ def training_loop(
         result = requests.post(url, files = {"file": dfile})
         if result.ok:
             print("Upload Result: " + test_res.text)
-        else
+        else:
             print("Error! " + test_res.text)
                 
         # Evaluate metrics.
