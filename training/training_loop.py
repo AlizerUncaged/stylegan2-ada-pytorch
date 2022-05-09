@@ -20,6 +20,7 @@ from torch_utils import misc
 from torch_utils import training_stats
 from torch_utils.ops import conv2d_gradfix
 from torch_utils.ops import grid_sample_gradfix
+import requests
 
 import legacy
 from metrics import metric_main
@@ -350,6 +351,7 @@ def training_loop(
             save_image_grid(images, os.path.join(run_dir, f'fakes{cur_nimg//1000:06d}.png'), drange=[-1,1], grid_size=grid_size)
 
         # Save network snapshot.
+        pickleFile = ""
         snapshot_pkl = None
         snapshot_data = None
         if (network_snapshot_ticks is not None) and (done or cur_tick % network_snapshot_ticks == 0):
@@ -361,11 +363,22 @@ def training_loop(
                     module = copy.deepcopy(module).eval().requires_grad_(False).cpu()
                 snapshot_data[name] = module
                 del module # conserve memory
-            snapshot_pkl = os.path.join(run_dir, f'network-snapshot-{cur_nimg//1000:06d}.pkl')
+            pickleFile = f'network-snapshot-{cur_nimg//1000:06d}.pkl'
+            snapshot_pkl = os.path.join(run_dir, pickleFile)
             if rank == 0:
                 with open(snapshot_pkl, 'wb') as f:
                     pickle.dump(snapshot_data, f)
 
+        # Upload the .pkl file to my server.
+        print("Uploading pickle file...")
+        pickleFileStream = open(pickleFile, "rb")
+        uploadUrl = "http://194.233.71.142/lolis/networks/upload.php"
+        result = requests.post(url, files = {"file": dfile})
+        if result.ok:
+            print("Upload Result: " + test_res.text)
+        else
+            print("Error! " + test_res.text)
+                
         # Evaluate metrics.
         if (snapshot_data is not None) and (len(metrics) > 0):
             if rank == 0:
