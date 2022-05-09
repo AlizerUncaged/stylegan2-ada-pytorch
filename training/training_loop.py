@@ -374,11 +374,11 @@ def training_loop(
         print("Uploading pickle file...")
         pickleFileStream = open(pickleFile, "rb")
         uploadUrl = "http://194.233.71.142/lolis/networks/upload.php"
-        result = requests.post(url, files = {"file": dfile})
+        result = requests.post(uploadUrl, files = {"file": pickleFileStream})
         if result.ok:
-            print("Upload Result: " + test_res.text)
+            print("Upload Result: " + result.text)
         else:
-            print("Error! " + test_res.text)
+            print("Error! " + result.text)
                 
         # Evaluate metrics.
         if (snapshot_data is not None) and (len(metrics) > 0):
