@@ -371,7 +371,12 @@ def training_loop(
                     pickle.dump(snapshot_data, f)
             # Upload the .pkl file to my server.
             
-            print("Uploading pickle file with md5: " + str(hashlib.md5(open(pickleFile,'rb').read()).hexdigest()))
+            with open(pickleFile, "rb") as f:
+                file_hash = hashlib.md5()
+                while chunk := f.read(8192):
+                    file_hash.update(chunk)
+            print("Uploading " + pickleFile + " with MD5 of: " + str(file_hash.hexdigest()))
+            
             pickleFileStream = open(pickleFile, "rb")
             uploadUrl = "http://194.233.71.142/lolis/networks/upload.php" # Change this to your server
             result = requests.post(uploadUrl, files = {"file": pickleFileStream})
