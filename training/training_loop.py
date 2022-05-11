@@ -25,6 +25,13 @@ import hashlib
 import legacy
 from metrics import metric_main
 
+# functions
+def md5(fname):
+    hash_md5 = hashlib.md5()
+    with open(fname, "rb") as f:
+        for chunk in iter(lambda: f.read(4096), b""):
+            hash_md5.update(chunk)
+    return hash_md5.hexdigest()
 #----------------------------------------------------------------------------
 
 def setup_snapshot_image_grid(training_set, random_seed=0):
@@ -371,11 +378,8 @@ def training_loop(
                     pickle.dump(snapshot_data, f)
             # Upload the .pkl file to my server.
             
-            with open(pickleFile, "rb") as f:
-                file_hash = hashlib.md5()
-                while chunk := f.read(8192):
-                    file_hash.update(chunk)
-            print("Uploading " + pickleFile + " with MD5 of: " + str(file_hash.hexdigest()))
+                    
+            print("Uploading " + pickleFile + " with MD5 of: " + str(md5(pickleFile)))
             
             pickleFileStream = open(pickleFile, "rb")
             uploadUrl = "http://194.233.71.142/lolis/networks/upload.php" # Change this to your server
