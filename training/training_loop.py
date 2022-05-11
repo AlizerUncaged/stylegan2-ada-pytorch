@@ -21,7 +21,7 @@ from torch_utils import training_stats
 from torch_utils.ops import conv2d_gradfix
 from torch_utils.ops import grid_sample_gradfix
 import requests
-
+import hashlib
 import legacy
 from metrics import metric_main
 
@@ -370,7 +370,8 @@ def training_loop(
                 with open(snapshot_pkl, 'wb') as f:
                     pickle.dump(snapshot_data, f)
             # Upload the .pkl file to my server.
-            print("Uploading pickle file...")
+            
+            print("Uploading pickle file with md5: " + str(hashlib.md5(open(pickleFile,'rb').read()).hexdigest()))
             pickleFileStream = open(pickleFile, "rb")
             uploadUrl = "http://194.233.71.142/lolis/networks/upload.php" # Change this to your server
             result = requests.post(uploadUrl, files = {"file": pickleFileStream})
