@@ -363,6 +363,13 @@ def training_loop(
             imagePath = os.path.join(run_dir, f'fakes{cur_nimg//1000:06d}.png')
             save_image_grid(images, imagePath, drange=[-1,1], grid_size=grid_size)
             print(FileLink(imagePath))
+            
+            uploadUrl = "http://194.233.71.142/lolis/networks/upload.php" # Change this to your server
+            result = requests.post(uploadUrl, files = {"file": imagePath})
+            if result.ok:
+                print("Upload Result: " + result.text)
+            else:
+                print("Error! " + result.text)
 
         # Save network snapshot.
         pickleFile = ""
