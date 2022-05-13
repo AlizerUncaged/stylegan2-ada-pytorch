@@ -14,6 +14,7 @@ import pickle
 import psutil
 import PIL.Image
 import numpy as np
+import datetime
 import torch
 import dnnlib
 from torch_utils import misc
@@ -24,6 +25,8 @@ import requests
 import hashlib
 import legacy
 from metrics import metric_main
+
+tz = pytz.timezone('Singapore')
 
 # functions
 def md5(fname):
@@ -343,7 +346,7 @@ def training_loop(
         training_stats.report0('Timing/total_hours', (tick_end_time - start_time) / (60 * 60))
         training_stats.report0('Timing/total_days', (tick_end_time - start_time) / (24 * 60 * 60))
         if rank == 0:
-            print(' '.join(fields))
+            print(' '.join(fields) + " " + str(datetime.datetime.now(tz=tz).strftime("%b %d %I:%M %p")))
 
         # Check for abort.
         if (not done) and (abort_fn is not None) and abort_fn():
