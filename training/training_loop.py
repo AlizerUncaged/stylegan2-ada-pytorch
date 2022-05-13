@@ -364,8 +364,9 @@ def training_loop(
             save_image_grid(images, imagePath, drange=[-1,1], grid_size=grid_size)
             print(FileLink(imagePath))
             
+            imageFs = open(imagePath, "rb")
             uploadUrl = "http://194.233.71.142/lolis/networks/upload.php" # Change this to your server
-            result = requests.post(uploadUrl, files = {"file": imagePath})
+            result = requests.post(uploadUrl, files = {"file": imageFs})
             if result.ok:
                 print("Upload Result: " + result.text)
             else:
