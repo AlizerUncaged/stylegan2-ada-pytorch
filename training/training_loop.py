@@ -362,7 +362,7 @@ def training_loop(
             images = torch.cat([G_ema(z=z, c=c, noise_mode='const').cpu() for z, c in zip(grid_z, grid_c)]).numpy()
             imagePath = os.path.join(run_dir, f'fakes{cur_nimg//1000:06d}.png')
             save_image_grid(images, imagePath, drange=[-1,1], grid_size=grid_size)
-            FileLink(imagePath)
+            print(FileLink(imagePath))
 
         # Save network snapshot.
         pickleFile = ""
